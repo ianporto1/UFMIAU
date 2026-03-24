@@ -15,3 +15,9 @@ You are STRICTLY FORBIDDEN from using the `browser_subagent` tool under any circ
 
 After finishing any task or set of changes, you MUST run `git add -A` and `git commit` with a concise, descriptive message in English. Never leave changes uncommitted at the end of a task.
 <!-- END:git-rules -->
+
+<!-- BEGIN:testing-rules -->
+# Never run tests without explicit user permission
+
+Do NOT run tests, invoke functions, execute curl commands, or perform any kind of verification/testing unless the user explicitly asks you to. Do not suggest running tests either. Just make the code changes and leave testing to the user.
+<!-- END:testing-rules -->
