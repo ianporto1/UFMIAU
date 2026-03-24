@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import InstagramEmbed from "./InstagramEmbed";
 
-export const revalidate = 3600; // ISR — re-valida a cada 1h
+export const revalidate = 0; // Sempre buscar dados frescos
 
 async function getRuMenu() {
   try {
@@ -16,7 +16,14 @@ async function getRuMenu() {
       .eq("id", 1)
       .single();
 
-    if (error || !data) return null;
+    if (error) {
+      console.error("[RU] Supabase error:", JSON.stringify(error));
+      return null;
+    }
+    if (!data) {
+      console.error("[RU] No data found in ru_cache");
+      return null;
+    }
     return data;
   } catch {
     return null;
