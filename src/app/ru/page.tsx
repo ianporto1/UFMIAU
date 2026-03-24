@@ -7,18 +7,15 @@ async function getRuMenu() {
   try {
     const supabase = await createClient();
     
-    // Chama a Edge Function configurada no seu Supabase
-    const { data, error } = await supabase.functions.invoke('get-ru-menu', {
-      method: "GET"
-    });
+    // Consulta diretamente do Cache (Atualizado Semanalmente via Cron Edge Function)
+    const { data, error } = await supabase
+      .from('ru_cache')
+      .select('*')
+      .eq('id', 1)
+      .single();
       
-    if (error) {
-      console.error("Erro na Edge Function:", error);
-      throw new Error("Falha ao invocar a Edge Function do Supabase");
-    }
-    
-    if (data?.error) {
-      console.error("Erro retornado pela Edge Function:", data.error);
+    if (error || !data) {
+      console.error("Cardápio não encontrado no Cache:", error);
       return null;
     }
 
@@ -26,12 +23,12 @@ async function getRuMenu() {
       caption: data.caption,
       url: data.url,
       timestamp: data.timestamp,
-      images: data.images || [], // sidecar (carrossel)
-      displayUrl: data.displayUrl, // fallback (imagem única)
+      images: data.images || [], 
+      displayUrl: data.display_url, 
     };
 
   } catch (error) {
-    console.error("Erro no scraping do R.U:", error);
+    console.error("Erro interno ao ler R.U Cache:", error);
     return null;
   }
 }
