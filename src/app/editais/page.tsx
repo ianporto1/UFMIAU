@@ -1,28 +1,26 @@
-export default function EditaisPage() {
-  // Dados mockados para exibição inicial
-  const editais = [
-    {
-      id: 1,
-      titulo: "Bolsa Permanência 2026",
-      status: "Aberto",
-      prazo: "30/04/2026",
-      tipo: "Assistência",
-    },
-    {
-      id: 2,
-      titulo: "PIBIC - Iniciação Científica",
-      status: "Em Análise",
-      prazo: "Encerrado",
-      tipo: "Pesquisa",
-    },
-    {
-      id: 3,
-      titulo: "Monitoria de Cálculo I",
-      status: "Aberto",
-      prazo: "15/05/2026",
-      tipo: "Ensino",
-    },
-  ];
+interface Edital {
+  id: string;
+  titulo: string;
+  status: string;
+  prazo: string;
+  tipo: string;
+  url: string;
+}
+
+async function getEditais(): Promise<Edital[]> {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/editais`, { next: { revalidate: 3600 } });
+    const data = await res.json();
+    return data.editais || [];
+  } catch (error) {
+    console.error("Erro ao buscar editais:", error);
+    return [];
+  }
+}
+
+export default async function EditaisPage() {
+  const editais = await getEditais();
 
   return (
     <div className="flex flex-col flex-1 pt-4 sm:pt-8 pb-24 sm:pb-8 w-full h-full px-4 sm:px-0">
@@ -31,7 +29,7 @@ export default function EditaisPage() {
           Editais 📄
         </h1>
         <p className="text-zinc-500 dark:text-zinc-400 text-sm sm:text-base mt-1">
-          Acompanhe bolsas e oportunidades da UFCAT.
+          Acompanhe bolsas e oportunidades reais da UFCAT (Sincronizado).
         </p>
       </header>
 
@@ -48,10 +46,13 @@ export default function EditaisPage() {
       </div>
 
       <div className="flex flex-col gap-4">
-        {editais.map((edital) => (
-          <div
+        {editais.map((edital: Edital) => (
+          <a
             key={edital.id}
-            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-sm"
+            href={edital.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow block"
           >
             <div className="flex justify-between items-start mb-2">
               <span className="text-xs font-semibold px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-md">
@@ -73,7 +74,7 @@ export default function EditaisPage() {
             <p className="text-sm text-zinc-500 flex items-center gap-1">
               <span>⏳</span> Prazo: {edital.prazo}
             </p>
-          </div>
+          </a>
         ))}
       </div>
     </div>
