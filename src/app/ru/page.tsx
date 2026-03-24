@@ -18,17 +18,17 @@ export default function RUPage() {
   };
 
   return (
-    <div className="flex flex-col flex-1 px-4 pt-8 pb-24 w-full h-full">
+    <div className="flex flex-col flex-1 pt-4 sm:pt-8 pb-24 sm:pb-8 w-full h-full px-4 sm:px-0">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-zinc-50">
           R.U UFCAT 🍽️
         </h1>
-        <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-1">
-          Cardápio do dia: <span className="font-semibold">{menu.data}</span>
+        <p className="text-zinc-500 dark:text-zinc-400 text-sm sm:text-base mt-1">
+          Cardápio do dia: <span className="font-semibold text-zinc-800 dark:text-zinc-200">{menu.data}</span>
         </p>
       </header>
 
-      <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Almoço */}
         <section className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-sm">
           <div className="bg-orange-50 dark:bg-orange-900/20 px-4 py-3 border-b border-orange-100 dark:border-orange-900/30 flex justify-between items-center">

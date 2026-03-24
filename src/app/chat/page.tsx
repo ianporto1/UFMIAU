@@ -13,14 +13,16 @@ export default function ChatPage() {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-[100dvh] w-full max-h-[100dvh] pb-16">
-      <header className="px-4 py-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex-shrink-0 z-10 sticky top-0">
-        <h1 className="text-xl font-bold text-blue-700 dark:text-blue-400 flex items-center gap-2">
-          UFMIAU.ai 🤖
-        </h1>
-        <p className="text-xs text-zinc-500 mt-0.5">
-          Tire dúvidas sobre a faculdade com a I.A
-        </p>
+    <div className="flex flex-col h-[100dvh] w-full max-h-[100dvh] pb-16 sm:pb-0 sm:h-[calc(100vh-2rem)] sm:max-w-4xl sm:mx-auto sm:border sm:border-zinc-200 sm:dark:border-zinc-800 sm:rounded-2xl sm:overflow-hidden sm:mt-4 sm:shadow-lg">
+      <header className="px-4 py-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex-shrink-0 z-10 sticky top-0 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-blue-700 dark:text-blue-400 flex items-center gap-2">
+            UFMIAU.ai 🤖
+          </h1>
+          <p className="text-xs sm:text-sm text-zinc-500 mt-0.5">
+            Tire dúvidas sobre a faculdade com a I.A
+          </p>
+        </div>
       </header>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">

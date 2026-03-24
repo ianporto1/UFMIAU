@@ -48,10 +48,12 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-50 dark:bg-zinc-950 font-sans sm:bg-zinc-200 sm:dark:bg-black items-center justify-center">
-        <main className="flex-1 w-full relative bg-zinc-50 dark:bg-zinc-950 sm:max-w-md sm:shadow-2xl sm:border-x sm:border-zinc-200 sm:dark:border-zinc-800 min-h-[100dvh]">
-          {children}
-          <BottomNav />
+      <body className="min-h-full flex flex-col sm:flex-row bg-zinc-50 dark:bg-zinc-950 font-sans">
+        <BottomNav />
+        <main className="flex-1 w-full relative sm:ml-64 bg-zinc-50 dark:bg-zinc-950 min-h-[100dvh] pt-4 sm:pt-8 pb-20 sm:pb-8">
+          <div className="max-w-6xl mx-auto w-full px-4 sm:px-8">
+            {children}
+          </div>
         </main>
       </body>
     </html>

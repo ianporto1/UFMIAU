@@ -25,12 +25,12 @@ export default function EditaisPage() {
   ];
 
   return (
-    <div className="flex flex-col flex-1 px-4 pt-8 pb-24 w-full h-full">
+    <div className="flex flex-col flex-1 pt-4 sm:pt-8 pb-24 sm:pb-8 w-full h-full px-4 sm:px-0">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-zinc-50">
           Editais 📄
         </h1>
-        <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-1">
+        <p className="text-zinc-500 dark:text-zinc-400 text-sm sm:text-base mt-1">
           Acompanhe bolsas e oportunidades da UFCAT.
         </p>
       </header>
