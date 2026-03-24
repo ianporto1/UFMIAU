@@ -1,19 +1,14 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@/utils/supabase/server";
 import InstagramEmbed from "./InstagramEmbed";
 
 export const revalidate = 0; // Sempre buscar dados frescos
 
 async function getRuMenu() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseKey) {
-    console.error("[RU] Error: NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY is missing.");
-    return { error: "Ambiente não configurado. Verifique o seu arquivo .env.local e reinicie o servidor (npm run dev)." };
-  }
+  const envKeys = Object.keys(process.env).filter(k => k.includes("SUPABASE"));
+  console.log("[RU] Available env keys:", envKeys);
 
   try {
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = await createClient();
 
     const { data, error } = await supabase
       .from("ru_cache")
@@ -23,7 +18,7 @@ async function getRuMenu() {
 
     if (error) {
       console.error("[RU] Supabase error:", JSON.stringify(error));
-      return { error: `Erro na conexão com o banco de dados: ${error.message}` };
+      return { error: `Erro na conexão com o banco de dados: ${error.message} (Env keys found: ${envKeys.join(", ")})` };
     }
     
     if (!data) {
