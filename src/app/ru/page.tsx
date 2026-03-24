@@ -1,12 +1,10 @@
 import { createClient } from "@/utils/supabase/server";
 import InstagramEmbed from "./InstagramEmbed";
 
-export const revalidate = 0; // Sempre buscar dados frescos
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 async function getRuMenu() {
-  const envKeys = Object.keys(process.env).filter(k => k.includes("SUPABASE"));
-  console.log("[RU] Available env keys:", envKeys);
-
   try {
     const supabase = await createClient();
 
@@ -18,7 +16,7 @@ async function getRuMenu() {
 
     if (error) {
       console.error("[RU] Supabase error:", JSON.stringify(error));
-      return { error: `Erro na conexão com o banco de dados: ${error.message} (Env keys found: ${envKeys.join(", ")})` };
+      return { error: `Erro na conexão com o banco de dados: ${error.message}` };
     }
     
     if (!data) {
@@ -28,8 +26,13 @@ async function getRuMenu() {
     
     return { data };
   } catch (err: any) {
-    console.error("[RU] Unexpected error:", err);
-    return { error: `Erro inesperado: ${err.message || "Erro desconhecido"}` };
+    const urlSet = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const keySet = !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    console.error("[RU] Unexpected error:", err, { urlSet, keySet });
+    
+    return { 
+      error: `Erro de configuração: URL=${urlSet ? "OK" : "Faltando"}, Key=${keySet ? "OK" : "Faltando"}. Certifique-se de que as variáveis de ambiente estão configuradas no dashboard da Vercel.` 
+    };
   }
 }
 
