@@ -4,10 +4,10 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function POST(req: Request) {
   try {
-    const { text } = await req.json();
+    const { titulo, text } = await req.json();
 
-    if (!text || typeof text !== "string") {
-      return new Response("Texto é obrigatório", { status: 400 });
+    if (!text || typeof text !== "string" || !titulo) {
+      return new Response("Título e Texto são obrigatórios", { status: 400 });
     }
 
     // Usamos o text-embedding-3-small (rápido e barato) de 1536 dimensões
@@ -24,7 +24,11 @@ export async function POST(req: Request) {
       .insert({
         conteudo: text,
         embedding: embedding,
-        metadados: { source: "admin_manual_insert", created_at: new Date() },
+        metadados: { 
+          titulo: titulo,
+          source: "admin_manual_insert", 
+          created_at: new Date() 
+        },
       });
 
     if (error) {
