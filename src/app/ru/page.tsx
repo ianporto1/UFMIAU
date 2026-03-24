@@ -1,11 +1,16 @@
 import Link from "next/link";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 
-export const revalidate = 3600; // Recarrega a cada 1 hora em background (ISR)
+export const revalidate = 3600; // ISR
+// Forçando Next.js a limpar o cache antigo
 
 async function getRuMenu() {
   try {
-    const supabase = await createClient();
+    // Instância nativa sem cookies para evitar erros 500 no Next.js ISR (Static Generation)
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
     
     // Consulta diretamente do Cache (Atualizado Semanalmente via Cron Edge Function)
     const { data, error } = await supabase
