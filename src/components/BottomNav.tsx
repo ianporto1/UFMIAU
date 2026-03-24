@@ -11,6 +11,7 @@ export default function BottomNav() {
     { href: "/editais", label: "Editais", icon: "📄" },
     { href: "/ru", label: "Menu R.U", icon: "🍽️" },
     { href: "/chat", label: "I.A UFMIAU", icon: "🤖" },
+    { href: "/admin", label: "Admin", icon: "⚙️" },
   ];
 
   return (
