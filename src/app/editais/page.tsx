@@ -1,3 +1,7 @@
+import { createClient } from "@/utils/supabase/server";
+
+export const revalidate = 3600; // Cache por 1 hora
+
 interface Edital {
   id: string;
   titulo: string;
@@ -9,12 +13,16 @@ interface Edital {
 
 async function getEditais(): Promise<Edital[]> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-    const res = await fetch(`${baseUrl}/api/editais`, { next: { revalidate: 3600 } });
-    const data = await res.json();
-    return data.editais || [];
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("editais")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return (data as Edital[]) || [];
   } catch (error) {
-    console.error("Erro ao buscar editais:", error);
+    console.error("Erro ao buscar editais do Supabase:", error);
     return [];
   }
 }
