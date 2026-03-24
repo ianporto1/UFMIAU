@@ -1,44 +1,33 @@
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/server";
 
 export const revalidate = 3600; // Recarrega a cada 1 hora em background (ISR)
 
 async function getRuMenu() {
   try {
-    const token = process.env.APIFY_TOKEN;
+    const supabase = await createClient();
     
-    // 1. Busca os detalhes da última execução para pegar o dataset ID
-    const runRes = await fetch(`https://api.apify.com/v2/actor-runs/QXMUAfiXXnfvcH9Ng?token=${token}`);
-    
-    if (!runRes.ok) throw new Error("Falha ao acessar ator da Apify");
-    const runData = await runRes.json();
-    const datasetId = runData.data.defaultDatasetId;
-
-    if (!datasetId) throw new Error("Dataset não encontrado");
-
-    // 2. Busca os itens no dataset
-    const datasetRes = await fetch(`https://api.apify.com/v2/datasets/${datasetId}/items?token=${token}`);
-    if (!datasetRes.ok) throw new Error("Falha ao buscar itens do dataset");
-    const items = await datasetRes.json();
-
-    // 3. Filtra pelo primeiro post de Cardápio do RU
-    const menuPost = items.find((item: any) => {
-      if (!item.caption) return false;
-      const cap = item.caption.toLowerCase();
-      // Remove acentos para facilitar
-      const normalizedCap = cap.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      return normalizedCap.includes("cardapio") && normalizedCap.includes("ru");
+    // Chama a Edge Function configurada no seu Supabase
+    const { data, error } = await supabase.functions.invoke('get-ru-menu', {
+      method: "GET"
     });
-
-    if (!menuPost) {
+      
+    if (error) {
+      console.error("Erro na Edge Function:", error);
+      throw new Error("Falha ao invocar a Edge Function do Supabase");
+    }
+    
+    if (data?.error) {
+      console.error("Erro retornado pela Edge Function:", data.error);
       return null;
     }
 
     return {
-      caption: menuPost.caption,
-      url: menuPost.url,
-      timestamp: menuPost.timestamp,
-      images: menuPost.images || [], // sidecar (carrossel)
-      displayUrl: menuPost.displayUrl, // fallback (imagem única)
+      caption: data.caption,
+      url: data.url,
+      timestamp: data.timestamp,
+      images: data.images || [], // sidecar (carrossel)
+      displayUrl: data.displayUrl, // fallback (imagem única)
     };
 
   } catch (error) {
